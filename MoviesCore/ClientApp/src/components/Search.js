@@ -15,12 +15,13 @@ export default class Search extends React.Component {
 		// 		e.target.query.value.toLowerCase()))
 		// console.log(ret);
 		//
-		let response = await fetch("movie/all");
+		let q = e.target.query.value.toLowerCase();
+		let response = await fetch(`movie/search?q=${q}`);
 		let data = await response.json();
 		console.log(data);
 		this.setState({
 			movies: data,
-			query: '',
+			query: q,
 			loading: false
 		});
 	}
@@ -32,6 +33,7 @@ export default class Search extends React.Component {
 					<input type="text" name="query" />
 					<input type="submit" />
 				</form>
+				{this.state.query}
 				{this.state.movies.map((movie) =>
 					<li key={movie.id}>{movie.title}</li>
 				)}
