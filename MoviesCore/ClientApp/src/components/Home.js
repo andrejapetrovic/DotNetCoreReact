@@ -4,6 +4,7 @@ import Search from './Search';
 import Info	from './Info';
 import '../App.css';
 import { Route } from "react-router-dom";
+import SearchList from './SearchList';
 
 export default class Home extends React.Component {
 
@@ -14,6 +15,7 @@ export default class Home extends React.Component {
 				<header className="App-header">
 					<Route path="/new" component={Movie} />
 					<Route path="/info" component={Info} />
+					<Route path="/results/:q" component={SearchList} />
 				</header>
 			</div>
 		);
