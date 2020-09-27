@@ -9,12 +9,6 @@ export default class Search extends React.Component {
 
 	search = async e => {
 		e.preventDefault();
-		// var ret = this.state.list
-		// 	.filter(x =>e
-		// 		x.toLowerCase().includes(
-		// 		e.target.query.value.toLowerCase()))
-		// console.log(ret);
-		//
 		let q = e.target.query.value.toLowerCase();
 		let response = await fetch(`movie/search?q=${q}`);
 		let data = await response.json();
