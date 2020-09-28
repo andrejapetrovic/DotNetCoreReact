@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MoviesCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MoviesCore.Controllers
 {
@@ -34,5 +36,15 @@ namespace MoviesCore.Controllers
             var list = mc.Movie.Where(m => m.Title.ToLower().Contains(query));
             return list;
         }
+
+        [HttpPost]
+        [Route("add")]
+        public Movie Add([FromBody] Movie movie)
+        {
+            var mov = mc.Add(movie);
+            mc.SaveChanges();
+            return mov.Entity;
+        }
+
     }
 }

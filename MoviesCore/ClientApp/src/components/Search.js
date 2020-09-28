@@ -6,11 +6,12 @@ export default class Search extends React.Component {
 	state = {
 		movies: [],
 		query: "",
-		loading: true
+		loading: false
 	}
 
-	search = async e => {
+	handleSubmit = async e => {
 		e.preventDefault();
+		// window.location.assign(`/results/${this.state.query}`)
 		// let q = e.target.query.value.toLowerCase();
 		// let response = await fetch(`movie/search?q=${q}`);
 		// let data = await response.json();
@@ -20,6 +21,8 @@ export default class Search extends React.Component {
 		// 	query: q,
 		// 	loading: false
 		// });
+		// this.setState({ ...this.state, loading: true })
+		// console.log(this.state.loading);
 	}
 
 	handleChange = event => {
@@ -31,20 +34,30 @@ export default class Search extends React.Component {
 		});
 	}
 
+	handleClick = () => {
+		console.log(this.props.loading)
+		this.props.setLoading(true);
+	}
+
+	renderLink = () => {
+		return (
+			<Link to={`/results/${this.state.query}`}> 
+				Search
+			</Link>
+		)
+	}
+
 	render() {
 		return (
 			<div>
-				<form onSubmit={this.search}>
+				<form onSubmit={this.handleSubmit}>
 					<input type="text" name="query" onChange={this.handleChange} 
 						value={this.state.query} />
 					{/* <input type="submit" /> */}
-					<button type="submit">
-						<Link to={`/results/${this.state.query}`}>
-							Search
-						</Link>
+					<button type="submit" disabled={this.props.loading}>
+						{this.props.loading ? <span>Submit</span> : this.renderLink() }
 					</button>
 				</form>
-				{this.state.query}
 				{/* <SearchList movies={this.state.movies} /> */}
 			</div>
 		);

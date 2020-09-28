@@ -9,6 +9,7 @@ export default class SearchList extends React.Component {
 		let q = this.props.match.params.q;
 		let response = await fetch(`movie/search?q=${q}`);
 		let data = await response.json();
+		this.props.setLoading(false);
 		this.setState({
 			movies: data
 		})
@@ -17,12 +18,17 @@ export default class SearchList extends React.Component {
 	componentDidUpdate(prevProps) {
 		if (this.props.match.params.q !== prevProps.match.params.q) {
 			console.log("Update")
+			this.props.setLoading(true);
 			this.fetchMovies();
+			// setTimeout(() => {
+			// 	this.fetchMovies();
+			// }, 3000)
 		}
 	}
 	
 	componentDidMount() {
 		console.log("Mount");
+		this.props.setLoading(true);
 		this.fetchMovies();
 	}
 
@@ -35,7 +41,7 @@ export default class SearchList extends React.Component {
 						{movie.story}<br />
 						{movie.price}<br />
 						{movie.genre}<br />
-						{movie.releaseDate}<br />
+						{movie.releaseDate}<br /><br />
 					</li>
 				)}
 			</div>
