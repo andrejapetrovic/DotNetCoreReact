@@ -22,5 +22,6 @@ namespace MoviesCore.Models
 
         public virtual ICollection<MemberMovies> MemberMovies { get; set; }
 
+        public ICollection<Ticket> Tickets { get; set; }
     }
 }

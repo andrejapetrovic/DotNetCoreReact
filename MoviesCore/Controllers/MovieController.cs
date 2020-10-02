@@ -64,5 +64,23 @@ namespace MoviesCore.Controllers
             await mc.SaveChangesAsync();
             return mov;
         }
+
+        [HttpGet]
+        [Route("user/{id}")]
+        public async Task<IEnumerable<Movie>> GetMoviesByUser(int id)
+        {
+            var movies = await mc.Movies
+                .Where(mov => mov.MemberMovies
+                .Any(mm => mm.MemberId == id))
+                .ToArrayAsync();
+            return movies;
+        }
+
+        [HttpGet]
+        [Route("mem/{id}")]
+        public async Task<Member> GetMember(int id)
+        {
+            return await mc.Members.Where(mem => mem.Id == id).FirstOrDefaultAsync();
+        }
     }
 }

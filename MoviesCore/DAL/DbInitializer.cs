@@ -24,7 +24,7 @@ namespace MoviesCore.DAL
                     Genre = "Fantazija",
                     Price = 144.45m,
                     ReleaseDate = DateTime.Parse("02/20/2000"),
-                    Story = "Bobo smrade..."
+                    Story = "..."
                 },
                                 new Movie()
                 {
@@ -32,7 +32,7 @@ namespace MoviesCore.DAL
                     Genre = "Fantazija",
                     Price = 144.45m,
                     ReleaseDate = DateTime.Parse("12/03/2002"),
-                    Story = "Kud li se denuo..."
+                    Story = "... ..."
                 },
                 new Movie()
                 {
@@ -68,7 +68,8 @@ namespace MoviesCore.DAL
             {
                 context.Members.Add(member);
             }
-
+            members[0].MemberMovies.Add(new MemberMovies(){ MovieId = movies[0].Id });
+            members[0].MemberMovies.Add(new MemberMovies() { MovieId = movies[1].Id });
             context.SaveChanges();
         }
     }

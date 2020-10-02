@@ -11,6 +11,7 @@ namespace MoviesCore.DAL
 
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Member> Members { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +19,7 @@ namespace MoviesCore.DAL
             modelBuilder.Entity<Member>().ToTable("Member");
             modelBuilder.Entity<MemberMovies>().ToTable("MemberMovies")
                 .HasKey(m => new { m.MemberId, m.MovieId });
+            modelBuilder.Entity<Ticket>().ToTable("Ticket");
         }
     }
 }
