@@ -24,27 +24,46 @@ namespace MoviesCore.Controllers
 
         [HttpGet]
         [Route("all")]
-        public IEnumerable<Movie> GetAll()
+        public async Task<IEnumerable<Movie>> GetAll()
         {
-            return mc.Movie;
+            return await mc.Movie.ToListAsync();
         }
 
         [HttpGet]
         [Route("search")]
-        public IEnumerable<Movie> Search([FromQuery(Name = "q")] string query)
+        public async Task<IEnumerable<Movie>> Search([FromQuery(Name = "q")] string query)
         {
-            var list = mc.Movie.Where(m => m.Title.ToLower().Contains(query));
+            var list = await mc.Movie.Where(m => m.Title.ToLower().Contains(query)).ToListAsync();
             return list;
         }
 
         [HttpPost]
         [Route("add")]
-        public Movie Add([FromBody] Movie movie)
+        public async Task<Movie> Add([FromBody] Movie movie)
         {
             var mov = mc.Add(movie);
-            mc.SaveChanges();
+            await mc.SaveChangesAsync();
             return mov.Entity;
         }
 
+        [HttpPost]
+        [Route("edit")]
+        public async Task<Movie> Edit([FromBody] Movie movie)
+        {
+            var mov = await mc.Movie.FirstOrDefaultAsync(m => m.Id == movie.Id);
+            mov.Title = movie.Title;
+            await mc.SaveChangesAsync();
+            return mov;
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<Movie> Delete([FromQuery(Name = "id")] int id)
+        {
+            var mov = await mc.Movie.Where(m => m.Id == id).FirstOrDefaultAsync();
+            mc.Movie.Remove(mov);
+            await mc.SaveChangesAsync();
+            return mov;
+        }
     }
 }
