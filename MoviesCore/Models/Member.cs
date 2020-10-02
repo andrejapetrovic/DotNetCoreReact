@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MoviesCore.Models
 {
@@ -7,14 +8,19 @@ namespace MoviesCore.Models
     {
         public Member()
         {
-            MemberMovie = new HashSet<MemberMovie>();
+            this.MemberMovies = new HashSet<MemberMovies>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         public string Name { get; set; }
+
         public string Email { get; set; }
+
         public DateTime Birthdate { get; set; }
 
-        public virtual ICollection<MemberMovie> MemberMovie { get; set; }
+        public virtual ICollection<MemberMovies> MemberMovies { get; set; }
+
     }
 }

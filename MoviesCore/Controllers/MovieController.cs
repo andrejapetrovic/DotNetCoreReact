@@ -5,6 +5,7 @@ using MoviesCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoviesCore.DAL;
 using System.Threading.Tasks;
 
 namespace MoviesCore.Controllers
@@ -13,57 +14,52 @@ namespace MoviesCore.Controllers
     [Route("movie")]
     public class MovieController : ControllerBase
     {
-        private DBFirstMoviesContext mc = new DBFirstMoviesContext();
+        private readonly MyContext mc;
 
-        private readonly ILogger<MovieController> _logger;
-
-        public MovieController(ILogger<MovieController> logger)
+        public MovieController(MyContext myCtx)
         {
-            _logger = logger;
+            mc = myCtx;
         }
 
         [HttpGet]
         [Route("all")]
-        public async Task<IEnumerable<Movie>> GetAll()
+        public IEnumerable<Movie> GetAll()
         {
-            return await mc.Movie.ToListAsync();
+            return mc.Movies;
         }
 
         [HttpGet]
         [Route("search")]
-        public async Task<IEnumerable<Movie>> Search([FromQuery(Name = "q")] string query)
+        public IEnumerable<Movie> Search([FromQuery(Name = "q")] string query)
         {
-            var list = await mc.Movie.Where(m => m.Title.ToLower().Contains(query)).ToListAsync();
+            var list = mc.Movies.Where(m => m.Title.ToLower().Contains(query));
             return list;
         }
 
         [HttpPost]
         [Route("add")]
-        public async Task<Movie> Add([FromBody] Movie movie)
+        public Movie Add([FromBody] Movie movie)
         {
             var mov = mc.Add(movie);
-            await mc.SaveChangesAsync();
+            mc.SaveChanges();
             return mov.Entity;
         }
 
-        [HttpPost]
-        [Route("edit")]
-        public async Task<Movie> Edit([FromBody] Movie movie)
-        {
-            var mov = await mc.Movie.FirstOrDefaultAsync(m => m.Id == movie.Id);
-            mov.Title = movie.Title;
-            await mc.SaveChangesAsync();
-            return mov;
-        }
+		[HttpPut]
+		[Route("edit/{id}")]
+		public int Edit([FromBody] Movie movie)
+		{
+			try
+			{
+				mc.Entry(movie).State = EntityState.Modified;
+				mc.SaveChanges();
+				return 1;
+			}
+			catch
+			{
+				throw;
+			}
+		}
 
-        [HttpDelete]
-        [Route("delete/{id}")]
-        public async Task<Movie> Delete([FromQuery(Name = "id")] int id)
-        {
-            var mov = await mc.Movie.Where(m => m.Id == id).FirstOrDefaultAsync();
-            mc.Movie.Remove(mov);
-            await mc.SaveChangesAsync();
-            return mov;
-        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MoviesCore.Models
 {
-    public partial class MemberMovie
+    public partial class MemberMovies
     {
         public int MemberId { get; set; }
         public int MovieId { get; set; }
