@@ -5,6 +5,7 @@ using MoviesCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoviesCore.DAL;
 using System.Threading.Tasks;
 
 namespace MoviesCore.Controllers
@@ -13,27 +14,25 @@ namespace MoviesCore.Controllers
     [Route("movie")]
     public class MovieController : ControllerBase
     {
-        private DBFirstMoviesContext mc = new DBFirstMoviesContext();
+        private readonly MyContext mc;
 
-        private readonly ILogger<MovieController> _logger;
-
-        public MovieController(ILogger<MovieController> logger)
+        public MovieController(MyContext myCtx)
         {
-            _logger = logger;
+            mc = myCtx;
         }
 
         [HttpGet]
         [Route("all")]
         public IEnumerable<Movie> GetAll()
         {
-            return mc.Movie;
+            return mc.Movies;
         }
 
         [HttpGet]
         [Route("search")]
         public IEnumerable<Movie> Search([FromQuery(Name = "q")] string query)
         {
-            var list = mc.Movie.Where(m => m.Title.ToLower().Contains(query));
+            var list = mc.Movies.Where(m => m.Title.ToLower().Contains(query));
             return list;
         }
 
@@ -45,6 +44,22 @@ namespace MoviesCore.Controllers
             mc.SaveChanges();
             return mov.Entity;
         }
+
+		[HttpPut]
+		[Route("edit/{id}")]
+		public int Edit([FromBody] Movie movie)
+		{
+			try
+			{
+				mc.Entry(movie).State = EntityState.Modified;
+				mc.SaveChanges();
+				return 1;
+			}
+			catch
+			{
+				throw;
+			}
+		}
 
     }
 }
