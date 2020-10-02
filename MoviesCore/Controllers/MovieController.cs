@@ -23,43 +23,27 @@ namespace MoviesCore.Controllers
 
         [HttpGet]
         [Route("all")]
-        public IEnumerable<Movie> GetAll()
+        public async Task<IEnumerable<Movie>> GetAll()
         {
-            return mc.Movies;
+            return mc.Movie;
         }
 
         [HttpGet]
         [Route("search")]
-        public IEnumerable<Movie> Search([FromQuery(Name = "q")] string query)
+        public async Task<IEnumerable<Movie>> Search([FromQuery(Name = "q")] string query)
         {
-            var list = mc.Movies.Where(m => m.Title.ToLower().Contains(query));
+            var list = mc.Movie.Where(m => m.Title.ToLower().Contains(query));
             return list;
         }
 
         [HttpPost]
         [Route("add")]
-        public Movie Add([FromBody] Movie movie)
+        public async Task<Movie> Add([FromBody] Movie movie)
         {
             var mov = mc.Add(movie);
-            mc.SaveChanges();
+            await mc.SaveChangesAsync();
             return mov.Entity;
         }
-
-		[HttpPut]
-		[Route("edit/{id}")]
-		public int Edit([FromBody] Movie movie)
-		{
-			try
-			{
-				mc.Entry(movie).State = EntityState.Modified;
-				mc.SaveChanges();
-				return 1;
-			}
-			catch
-			{
-				throw;
-			}
-		}
 
     }
 }
