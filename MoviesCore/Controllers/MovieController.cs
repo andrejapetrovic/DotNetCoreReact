@@ -25,14 +25,14 @@ namespace MoviesCore.Controllers
         [Route("all")]
         public async Task<IEnumerable<Movie>> GetAll()
         {
-            return mc.Movie;
+            return await mc.Movies.ToListAsync();
         }
 
         [HttpGet]
         [Route("search")]
         public async Task<IEnumerable<Movie>> Search([FromQuery(Name = "q")] string query)
         {
-            var list = mc.Movie.Where(m => m.Title.ToLower().Contains(query));
+            var list = await mc.Movies.Where(m => m.Title.ToLower().Contains(query)).ToListAsync();
             return list;
         }
 
@@ -45,5 +45,24 @@ namespace MoviesCore.Controllers
             return mov.Entity;
         }
 
+        [HttpPost]
+        [Route("edit")]
+        public async Task<Movie> Edit([FromBody] Movie movie)
+        {
+            var mov = await mc.Movies.FirstOrDefaultAsync(m => m.Id == movie.Id);
+            mov.Title = movie.Title;
+            await mc.SaveChangesAsync();
+            return mov;
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<Movie> Delete([FromQuery(Name = "id")] int id)
+        {
+            var mov = await mc.Movies.Where(m => m.Id == id).FirstOrDefaultAsync();
+            mc.Movies.Remove(mov);
+            await mc.SaveChangesAsync();
+            return mov;
+        }
     }
 }
